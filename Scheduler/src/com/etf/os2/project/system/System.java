@@ -46,7 +46,7 @@ public class System {
 
             finishProcesses();
         }
-
+        
         for (Process proc : finishedProcess) {
             proc.writeResults();
         }

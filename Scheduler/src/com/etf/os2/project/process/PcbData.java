@@ -2,13 +2,13 @@ package com.etf.os2.project.process;
 
 public class PcbData {
 	
-	private int predictedExecutionTime;
+	private long predictedExecutionTime;
 
-	public int getPredictedExecutionTime() {
+	public long getPredictedExecutionTime() {
 		return predictedExecutionTime;
 	}
 
-	public void setPredictedExecutionTime(int predictedExecutionTime) {
+	public void setPredictedExecutionTime(long predictedExecutionTime) {
 		this.predictedExecutionTime = predictedExecutionTime;
 	}
 	

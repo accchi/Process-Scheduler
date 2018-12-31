@@ -7,7 +7,7 @@ public abstract class Scheduler {
 
     public abstract void put(Pcb pcb);
 
-    public static Scheduler createScheduler(String[] args) {
+    public static Scheduler createScheduler(String[] args) { // SJF: 0 - expCoef, 1 - Pre/NonPre; 
     	
 		/*switch(args[0]) {
 		
@@ -20,8 +20,7 @@ public abstract class Scheduler {
 			break;
 		
 		}*/
-		
-		return new SJFScheduler();
+		return new SJFScheduler(Integer.parseInt(args[1]), Double.parseDouble(args[2])); // Getting number of processors from length of RUNNING arr
 		
     }
 }
