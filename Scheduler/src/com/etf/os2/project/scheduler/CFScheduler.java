@@ -9,6 +9,8 @@ import com.etf.os2.project.process.PcbData;
 
 public class CFScheduler extends Scheduler {
 	
+	static final int TS = 10;
+	
 	private PriorityQueue<Pcb> queue;
 	
 	public CFScheduler() {
@@ -17,13 +19,6 @@ public class CFScheduler extends Scheduler {
 			
 			public int compare(Pcb p1, Pcb p2) { // written like this not like p1.long - p2.long because of conversion  
                 	
-				/*if(p1.getPcbData().getWaitTime() > p2.getPcbData().getWaitTime())
-					return 1;
-                    
-				if(p1.getPcbData().getWaitTime() < p2.getPcbData().getWaitTime())
-					return -1;
-                    
-				return 0;*/
 				return Long.compare(p1.getPcbData().getExeTime(), p2.getPcbData().getExeTime());
 			}    
        });  
@@ -39,6 +34,10 @@ public class CFScheduler extends Scheduler {
 			PcbData data = p.getPcbData();
 			data.setWaitTime(data.getWaitTime() + System.currentTimeMillis() - data.getPutTime());
 			p.setTimeslice(data.getWaitTime() / Pcb.getProcessCount());
+			
+			if(p.getTimeslice() == 0) // in case division give result 0
+				p.setTimeslice(TS);
+			
 		}
 		
 		return p;
@@ -60,7 +59,8 @@ public class CFScheduler extends Scheduler {
 		}
 		else {
 			
-			data.setExeTime(pcb.getExecutionTime());
+			//data.setExeTime(pcb.getExecutionTime());
+			data.setExeTime(data.getExeTime()+pcb.getExecutionTime());
 			
 		}
 		

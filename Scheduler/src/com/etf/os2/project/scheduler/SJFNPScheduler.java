@@ -4,7 +4,9 @@ import com.etf.os2.project.process.Pcb;
 import com.etf.os2.project.process.PcbData;
 
 public class SJFNPScheduler extends SJFScheduler {
-
+	
+	static final int PREDICTED = 10;
+	
 	public SJFNPScheduler(double expC) {
 		super(expC);
 	}
@@ -24,14 +26,14 @@ public class SJFNPScheduler extends SJFScheduler {
 		if(pcb.getPcbData() == null) { // pcb arrived for first time
 			
 			pcb.setPcbData(new PcbData());
-			//pcb.getPcbData().setPredictedExecutionTime(1);
+			pcb.getPcbData().setPredictedExecutionTime(PREDICTED);
 			queue.add(pcb);
 			
 		}
 		else {
 			
 			pcb.getPcbData().setPredictedExecutionTime((long)(pcb.getPcbData().getPredictedExecutionTime() * (1 - expCoef) + pcb.getExecutionTime() * expCoef));
-			queue.add(pcb); // put process where he was executed to avoid cache miss
+			queue.add(pcb); 
 			
 		}
 	}

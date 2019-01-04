@@ -29,9 +29,15 @@ public abstract class Scheduler {
 			
 			return new MFQScheduler(N, timeSlices);
 		}
-		case "CFS":
+		case "CFS":{
 			
 			return new CFScheduler();
+		}
+		case "MyScheduler":{
+			
+			return new MyScheduler(Integer.parseInt(args[1]),Double.parseDouble(args[2]));
+			
+		}
 		}
 		
     	
