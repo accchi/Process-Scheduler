@@ -35,7 +35,8 @@ public abstract class Scheduler {
 		}
 		case "MyScheduler":{
 			
-			return new MyScheduler(Integer.parseInt(args[1]),Double.parseDouble(args[2]));
+			//return new Optimized(Integer.parseInt(args[1]));
+			return new OptimizedPriority(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 			
 		}
 		}

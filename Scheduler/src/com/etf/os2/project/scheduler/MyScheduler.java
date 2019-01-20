@@ -1,5 +1,6 @@
 package com.etf.os2.project.scheduler;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -9,9 +10,13 @@ import com.etf.os2.project.process.Process;
 
 public class MyScheduler extends Scheduler {
 
+	static final int PREDICTED = 400;
+	static  int MAX_WAITING_TIME = 1000;
+	private ArrayList<Pcb> waiting;
 	private PriorityQueue<Pcb>[] queues;
 	private double expCoef;
 	private int numOfProcessors;
+	
 	
 	public MyScheduler(int numOfPro, double expC) {
 		
@@ -21,12 +26,13 @@ public class MyScheduler extends Scheduler {
 		numOfProcessors = numOfPro;
 		queues = new PriorityQueue[numOfProcessors];
 		expCoef = expC;
+		waiting = new ArrayList<Pcb>();
 		
 		for(int i = 0; i < numOfProcessors; i++) {
 			
 			queues[i] = new PriorityQueue<Pcb>(new Comparator<Pcb>() { 
 				
-                public int compare(Pcb p1, Pcb p2) { // written like this not like p1.long - p2.long because of conversion  
+                public int compare(Pcb p1, Pcb p2) { // written like this not like p1.long - p2.long because of conversion
                 	
                 	return Long.compare(p1.getPcbData().getPredictedExecutionTime(), p2.getPcbData().getPredictedExecutionTime());
                 }    
@@ -38,7 +44,29 @@ public class MyScheduler extends Scheduler {
 	@Override
 	public Pcb get(int cpuId) {
 		
-		Pcb p = queues[cpuId].poll();
+		Pcb p = null;
+		
+		if(!waiting.isEmpty())
+			p = waiting.get(0);
+		
+		//MAX_WAITING_TIME = 30 * Pcb.getProcessCount();
+		
+		if(p != null) {
+			
+			if(Pcb.getCurrentTime() - p.getPcbData().getPutTime() > MAX_WAITING_TIME) {
+				
+				waiting.remove(0);
+				queues[p.getAffinity()].remove(p);
+				
+			}else {
+				
+				p = queues[cpuId].poll();
+				waiting.remove(p);
+				
+			}	
+		}
+		
+		//p = queues[cpuId].poll();
 		
 		if(p == null)
 			p = queues[findMostLoadedCpu()].poll();
@@ -56,7 +84,7 @@ public class MyScheduler extends Scheduler {
 		if(pcb.getPcbData() == null) { // pcb arrived for first time
 			
 			pcb.setPcbData(new PcbData());
-			pcb.getPcbData().setPredictedExecutionTime(6);
+			pcb.getPcbData().setPredictedExecutionTime(PREDICTED);
 			
 		}
 		else {
@@ -64,6 +92,8 @@ public class MyScheduler extends Scheduler {
 			pcb.getPcbData().setPredictedExecutionTime((long)(pcb.getPcbData().getPredictedExecutionTime() * (1 - expCoef) + pcb.getExecutionTime() * expCoef));
 			
 		}
+		pcb.getPcbData().setPutTime(Pcb.getCurrentTime());
+		waiting.add(pcb);
 		// try if cpu where process last executed can be preemt
 		if(Pcb.RUNNING[pcb.getAffinity()] != Pcb.IDLE && Process.getCurrentTime() - Pcb.RUNNING[pcb.getAffinity()].getPcbData().getGetTime() < pcb.getPcbData().getPredictedExecutionTime()) {
 			
@@ -73,6 +103,8 @@ public class MyScheduler extends Scheduler {
 			return;
 			
 		}
+		
+	
 		// if not find best you can find
 		if(Pcb.RUNNING[findBestCpu()] != Pcb.IDLE && Process.getCurrentTime() - Pcb.RUNNING[findBestCpu()].getPcbData().getGetTime() < pcb.getPcbData().getPredictedExecutionTime()) {
 			
@@ -96,6 +128,7 @@ public class MyScheduler extends Scheduler {
 		}
 		
 		queues[findBestCpu()].add(pcb);
+		//queues[pcb.getAffinity()].add(pcb);
 		
 	}
 	

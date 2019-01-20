@@ -1,5 +1,6 @@
 package com.etf.os2.project.process;
 
+import com.etf.os2.project.Main;
 import com.etf.os2.project.scheduler.Scheduler;
 
 import java.util.*;
@@ -283,5 +284,9 @@ public class Process {
         ret.append(String.format("ResponseTime=%d ", stats.getResponseTime()));
 
         System.out.println(ret);
+        
+        //ADDED BY ME
+        Main.totalExecutionTime += stats.getExecutionTime();
+        Main.totalResponseTime += stats.getResponseTime();
     }
 }

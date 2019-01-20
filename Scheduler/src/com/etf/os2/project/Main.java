@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Main {
+	//ADDED BY ME
+	public static double totalResponseTime = 0.0;
+    public static double totalExecutionTime = 0.0;
 
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -40,5 +43,10 @@ public class Main {
         System system = new System(scheduler, numCpus, processes);
 
         system.work();
+        
+        //ADDED BY ME
+        java.lang.System.out.println("STATS:");
+        java.lang.System.out.println("\tAverage ExecutionTime: " + totalExecutionTime / numProcesses);
+        java.lang.System.out.println("\tAverage ResponseTime: " + totalResponseTime / numProcesses);
     }
 }

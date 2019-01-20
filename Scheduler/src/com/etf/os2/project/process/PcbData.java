@@ -5,6 +5,7 @@ public class PcbData {
 	private long predictedExecutionTime, getTime; // for SJF
 	private int previousQueue; // for MFQS
 	private long exeTime, waitTime, putTime ; // for CFS;
+	private boolean preempt = false; // for SJF Preempted
 
 	public long getPredictedExecutionTime() {
 		return predictedExecutionTime;
@@ -52,6 +53,14 @@ public class PcbData {
 
 	public void setGetTime(long getTime) {
 		this.getTime = getTime;
+	}
+
+	public boolean isPreempt() {
+		return preempt;
+	}
+
+	public void setPreempt(boolean preempt) {
+		this.preempt = preempt;
 	}
 	
 	
